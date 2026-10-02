@@ -13,7 +13,7 @@ import { buildScene, FOV } from './scene.js';
 import { loadImages } from './assets.js';
 import { FW, FH, CARD_W, TICKET, STAMP_PT, toCard } from './layout.js';
 import { TL, TEXT, COLORS } from './config.js';
-import { drawFront, drawBack, setImages, setStampPoint, resetStampPoint } from './faces.js';
+import { drawFront, drawBack, setImages, setStampPoint, resetStampPoint, CAP_START } from './faces.js';
 import { sfx, PRE } from './sfx.js';
 import { clamp, lerp, prog, rng, easeOutCubic, easeOutBack, easeInOutCubic } from './ease.js';
 
@@ -81,7 +81,7 @@ async function init() {
   // ── pointer → rotation ───────────────────────────────────────────────────
   const root = app;
   root.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('#controls')) return;
+    if (e.target.closest('#controls') || e.target.closest('#site-link')) return;
     sfx.unlock();
     root.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -213,6 +213,7 @@ async function init() {
     stampAt = 0; impactSeen = false; vt = 1.0; lastDraw = -1; hintKey = '';
     resetStampPoint(); liveStamp.x = STAMP_PT.x; liveStamp.y = STAMP_PT.y;
     sfx.ambient(0);
+    $('site-link').classList.remove('show');
     setHint();
     animateTo(new THREE.Quaternion(), 0.6); zoomT = 1;
   }
@@ -380,6 +381,9 @@ async function init() {
     if (paint) renderer.render(scene, camera);
     focusLines(dImp);
     setHint();
+    const rideT = stamped && vt >= TL.train[1] ? 5.8 + Math.max(0, vt - TL.train[1]) : 5.8;
+    const rideCaption = stamped && vt >= TL.train[1] && rideT >= CAP_START.train && (flippedOnce || nf.z < 0.2);
+    $('site-link').classList.toggle('show', rideCaption);
 
     elTopFade();
   }
