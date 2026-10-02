@@ -1,6 +1,6 @@
-# stamp your ticket 🎫
+# stamp the ticket boi 🎫
 
-hi, i'm elaine. this is a little card you can spin around, stamp, and ride.
+this is a little card you can spin around, stamp, and ride.
 
 it started as the first three panels of my portfolio, a manga-style train journey, and i wanted to see if i could pick them up and hold them. so i turned the panels into a 3D card:
 
@@ -54,4 +54,4 @@ options: `?record=1` hides all the buttons for screen-recording, `?t=3.2` freeze
 
 the code is free to learn from. the illustrations in `public/assets/` are mine, all rights reserved. please don't reuse them without asking.
 
-made by [elaine yu](https://elaineyu.design) · duke '29
+made by yours truly :)[elaine yu](https://elaineyu.design)
