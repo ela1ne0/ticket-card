@@ -10,7 +10,7 @@ it started as the first three panels of my portfolio, a manga-style train journe
 
 all the art is drawn by me (the panels from my portfolio). the card itself is three.js, and everything else is plain JavaScript.
 
-**live:**  · **my portfolio:** https://www.elaineyu.design/
+**live:** https://ticket-card.vercel.app/ **my portfolio:** https://www.elaineyu.design/
 
 ## play with it
 
