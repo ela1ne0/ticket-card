@@ -284,6 +284,38 @@ function drawInstruction(ctx, t, clock) {
   ctx.restore();
 }
 
+// stamp-in-hand sprite: arrives, presses on impact, lifts away
+const SPR_W = 700;
+const SPR_ANCHOR = { x: 0.33, y: 0.52 };
+function drawStampSprite(ctx, t) {
+  if (t < TL.stampIn[0] || t > TL.stampOut[1]) return;
+  const img = ctxImg.stampHand;
+  if (!img) return;
+  const h = SPR_W * (img.height / img.width);
+  let ox, oy, rot, sc, al = 1;
+  if (t < TL.impact) {
+    const e = easeOutCubic(prog(t, TL.stampIn[0], TL.stampIn[1]));
+    ox = lerp(760, 0, e); oy = lerp(-980, 0, e);
+    rot = lerp(0.55, -0.14, e); sc = lerp(1.35, 1.0, e);
+    al = clamp(prog(t, TL.stampIn[0], TL.stampIn[0] + 0.15));
+  } else if (t < TL.stampOut[0]) {
+    const press = Math.sin(Math.PI * clamp((t - TL.impact) / 0.13)) * 0.06;
+    ox = 0; oy = 0; rot = -0.14; sc = 1.0 - press;
+  } else {
+    const e = easeInCubic(prog(t, TL.stampOut[0], TL.stampOut[1]));
+    ox = lerp(0, 420, e); oy = lerp(0, -700, e);
+    rot = lerp(-0.14, 0.3, e); sc = lerp(1, 1.18, e);
+    al = 1 - e;
+  }
+  ctx.save();
+  ctx.globalAlpha = al;
+  ctx.translate(SP.x + ox, SP.y + oy);
+  ctx.rotate(rot);
+  ctx.scale(sc, sc);
+  ctx.drawImage(img, -SPR_ANCHOR.x * SPR_W, -SPR_ANCHOR.y * h, SPR_W, h);
+  ctx.restore();
+}
+
 function drawTicketPanel(ctx, t, clock, sT) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, FW, FH);

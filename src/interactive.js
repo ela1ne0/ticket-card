@@ -210,7 +210,10 @@ async function init() {
   function reset() { animateTo(new THREE.Quaternion(), 0.7); zoomT = 1; }
   function restart() {
     stamped = false; scanned = false; scanState = -1; flippedOnce = false;
-    resetStampPoint(); liveStamp.x = STAMP_PT.x; liveStamp.y = STAMP_PT.y; sfx.setMuted(sfx.muted); setHint();
+    stampAt = 0; impactSeen = false; vt = 1.0; lastDraw = -1; hintKey = '';
+    resetStampPoint(); liveStamp.x = STAMP_PT.x; liveStamp.y = STAMP_PT.y;
+    sfx.ambient(0);
+    setHint();
     animateTo(new THREE.Quaternion(), 0.6); zoomT = 1;
   }
   $('b-flip').addEventListener('click', flip);
