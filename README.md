@@ -1,6 +1,6 @@
 # stamp the ticket boi 🎫
 
-this is a little card you can spin around, stamp, and ride. I had this idea after stumbling across https://ramp.design/ (why is everyone there so tuff)
+this is a little card you can spin around, stamp, and ride. I had this idea after stumbling across [ramp.design](https://ramp.design/) (why is everyone there so tuff)
 
 it started as the first three panels of my portfolio, a manga-style train journey, and i wanted to see if i could pick them up and hold them. so i turned the panels into a 3D card:
 
