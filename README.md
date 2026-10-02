@@ -1,67 +1,57 @@
-# ticket-reel
+# stamp your ticket 🎫
 
-Two pages, one codebase and one set of art:
+hi, i'm elaine. this is a little card you can spin around, stamp, and ride.
 
-- **`/` — interactive card.** Drag to spin it any way you like (with momentum), scroll/pinch to zoom, hover the ticket to scan it, click to stamp it → the platform panel wipes in and the train slides up → flip the card (button, **Space**, or just spin it) to ride. Keys: **Space** flip · **R** reset · **N** start over · **H** hide UI. Add `?record=1` to hide all UI for screen-recording a demo.
-- **`/reel.html` — the scripted 9:16 reel** (below), which also exports to MP4.
+it started as the first three panels of my portfolio, a manga-style train journey, and i wanted to see if i could pick them up and hold them. so i turned the panels into a 3D card:
 
-A 3D card for a reel: **ticket → stamp → platform (train slides in) → card flips → train interior with parallax buildings.**
-Built with Vite + three.js. The art is your own panel layers from `portfolio2026-7` (nothing generated).
+1. **get your ticket stamped.** hover the ticket to scan it, then click to stamp it anywhere you like.
+2. **catch the train.** the ink wipes across and the train slides into the platform.
+3. **enjoy the ride.** flip the card over for the view from inside the train.
 
-The card faces are painted on 2D canvases (so your hand-drawn layers stay untouched) and mapped onto a
-glossy three.js card. Every animation is a pure function of time, so playback, scrubbing and export all match.
+all the art is drawn by me (the panels from my portfolio). the card itself is three.js, and everything else is plain JavaScript.
 
-## Run
+**live:** _add your link here_ · **my portfolio:** _add your link here_
+
+## play with it
+
+- **drag** to spin the card any direction (it keeps its momentum)
+- **scroll / pinch** to zoom
+- **hover + click the ticket** to stamp it
+- **space** flips · **r** resets · **n** starts over
+- turn the sound on for the stamp and the train
+
+## run it yourself
 
 ```bash
 npm install
-npm run dev          # interactive card at the printed URL; the reel is at /reel.html
+npm run dev
 ```
 
-URL options (combine freely):
+the interactive card is at `/`. the scripted 9:16 version i made for reels is at `/reel.html`.
 
-| param | what it does |
-|---|---|
-| `?record=1` | hides the UI + cursor, no pointer tilt. Press **Space** to start, then screen-record |
-| `?autoplay=1` | starts immediately (browsers block sound without a click) |
-| `?t=2.3` | freeze on one frame (great for tweaking) |
-| `?w=1080` | canvas pixel width (height = w × 16/9) |
-| `?speed=0.5` | slow-mo playback |
-| `?sound=0` | mute |
-
-Keys: **Space** replay · **H** hide/show the hint pill.
-
-## Export an MP4 (no screen recording needed)
+to export that reel as an mp4:
 
 ```bash
-npx playwright install chromium    # once
-npm run export                      # → reel.mp4, 1080x1920, 30 fps, sound included
-npm run export -- --fps 60 --out reel-60.mp4
-npm run export -- --w 720           # quick test render
-npm run export -- --no-audio
+npx playwright install chromium   # once
+npm run export                    # needs ffmpeg
 ```
 
-Needs `ffmpeg` on your PATH. Frames are rendered one at a time at exact timestamps, so it never drops frames.
-`npm run shots -- 2.3 6.6` writes still PNGs of any timestamps into `./shots`.
+options: `?record=1` hides all the buttons for screen-recording, `?t=3.2` freezes the reel on one frame, `npm run export -- --w 720` for a quick test render.
 
-## Edit it
+## how it's put together
 
-| file | what's in it |
+| file | what it does |
 |---|---|
-| `src/config.js` | all text (top label, step captions, site URL) and the **timeline** (seconds for every beat) |
-| `src/faces.js` | the three panels: ticket + stamp + splatter, platform + train, interior + parallax. Panel caption text is `CAP_PLATFORM` / `CAP_TRAIN` |
-| `src/timeline.js` | card motion, camera moves, impact shake |
-| `src/audio.js` | synthesized sound design (same sounds as your site's beep/thud, plus whooshes, chime, rail clacks) |
-| `src/scene.js` | shared: renderer, lighting, glossy card, face textures |
-| `src/reel.js` | the scripted reel (reel.html): overlays, playback, export API |
-| `src/interactive.js` | the interactive page (index.html): drag/inertia, raycast hover + stamp, flip, zoom |
-| `src/sfx.js` | interactive sound effects (reuses `audio.js` synths) |
-| `public/assets/` | your layers, downscaled (3000×2250). Swap files in place to restyle |
+| `src/scene.js` | the 3D card, lighting and glossy finish |
+| `src/faces.js` | paints the three panels onto the card's two faces |
+| `src/interactive.js` | drag + momentum, hover/scan, stamping, flipping |
+| `src/reel.js` | the scripted reel version |
+| `src/sfx.js`, `src/audio.js` | all the sounds, synthesized in code (no audio files) |
+| `src/config.js` | text and timing for every beat |
+| `public/assets/` | the artwork |
 
-Timeline (seconds): card in 0–0.85 · scan 0.95 · stamp lands **2.25** · ink wipe 3.2 · train 3.7–5.3 · flip 6.0–7.25 · outro 10.4 · total 12.0
+## a note on the art
 
-## Notes
+the code is free to learn from. the illustrations in `public/assets/` are mine, all rights reserved. please don't reuse them without asking.
 
-- Fonts (Space Mono, Caveat) come from `@fontsource`, so it works offline. Noto Serif JP isn't used.
-- No GPU (CI, some Linux boxes)? `SOFTWARE_GL=1 npm run export` forces CPU rendering. It works but is slow.
-- Fresh `npm install` pulls current `three`; if a future version changes `scene.environmentIntensity`, pin to the version in `package-lock.json`.
+made by [elaine yu](https://elaineyu.design) · duke '29
