@@ -114,23 +114,6 @@ function drawTicket(ctx, t, clock, sT) {
   ctx.translate(TICKET.x, TICKET.y);
   ctx.scale(K, K);
 
-  // pulse ring (stops once the scan begins, like :hover on the site)
-  if (sT < TL.scan[0]) {
-    const pp = 0.5 - 0.5 * Math.cos((2 * Math.PI * clock) / 2);
-    const sp = 6 * pp;
-    rr(ctx, -sp, -sp, W + 2 * sp, H + 2 * sp, 8 + sp);
-    ctx.fillStyle = `rgba(26,82,212,${lerp(0.2, 0.12, pp)})`;
-    ctx.fill();
-  }
-
-  // hand-inked double outline (the site's ::before with the roughen filter)
-  ctx.strokeStyle = 'rgba(26,82,212,0.85)';
-  ctx.lineWidth = 1.6;
-  for (const [ox, oy] of [[0.7, -0.5], [-0.6, 0.6]]) {
-    rr(ctx, -3 + ox, -3 + oy, W + 6, H + 6, 10);
-    ctx.stroke();
-  }
-
   // body
   rr(ctx, 0, 0, W, H, 8);
   ctx.fillStyle = '#fff';
