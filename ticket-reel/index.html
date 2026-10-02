@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>stamp your ticket · elaine yu</title>
+  <link rel="icon" href="data:," />
+</head>
+<body>
+  <div id="app">
+    <div id="dots"></div>
+    <canvas id="gl"></canvas>
+    <canvas id="fx"></canvas>
+    <div id="top-label"></div>
+    <img id="stamp-cursor" src="./assets/stamp-hand.png" alt="" draggable="false" />
+    <div id="hint">drag to spin the card · hover + click the ticket to stamp it</div>
+    <div id="controls">
+      <button id="b-flip" title="flip (space)" aria-label="flip card">flip</button>
+      <button id="b-reset" title="reset (r)" aria-label="reset card">reset</button>
+      <button id="b-again" title="start over (n)" aria-label="start over">again</button>
+      <button id="b-sound" title="sound" aria-label="sound" aria-pressed="true">sound</button>
+    </div>
+  </div>
+  <script type="module" src="/src/interactive.js"></script>
+</body>
+</html>

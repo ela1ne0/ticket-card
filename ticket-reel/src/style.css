@@ -5,7 +5,7 @@
   --hand: 'Caveat', cursive;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; background: var(--blue); overflow: hidden; }
+html, body { height: 100%; background: #0b1b52; overflow: hidden; }
 body { display: grid; place-items: center; font-family: var(--mono); }
 
 /* 9:16 stage. Everything inside is sized in cqw so it scales with the stage,
@@ -17,7 +17,14 @@ body { display: grid; place-items: center; font-family: var(--mono); }
   aspect-ratio: 9 / 16;
   container-type: size;
   overflow: hidden;
-  background: var(--blue);
+  background: radial-gradient(ellipse at 50% 42%, #2b68ee 0%, #1a52d4 55%, #123aa3 100%);
+}
+#dots { /* manga screentone, stronger toward the edges */
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at center, rgba(255,255,255,0.14) 0.26cqw, transparent 0.32cqw);
+  background-size: 2.4cqw 2.4cqw;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 46%, transparent 20%, #000 88%);
+          mask-image: radial-gradient(ellipse at 50% 46%, transparent 20%, #000 88%);
 }
 #gl, #fx { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 

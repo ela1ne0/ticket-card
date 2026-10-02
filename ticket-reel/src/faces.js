@@ -9,6 +9,11 @@ import {
   easeOutCubic, easeInCubic, easeInOutCubic, easeTrain,
 } from './ease.js';
 
+// The stamp point is mutable so the interactive page can stamp wherever you click.
+const SP = { x: STAMP_PT.x, y: STAMP_PT.y };
+export function setStampPoint(x, y) { SP.x = x; SP.y = y; }
+export function resetStampPoint() { SP.x = STAMP_PT.x; SP.y = STAMP_PT.y; }
+
 const BLUE = COLORS.blue;
 const MONO = '"Space Mono", ui-monospace, monospace';
 const HAND = '"Caveat", cursive';
@@ -103,15 +108,15 @@ const TIME_STR = (() => {
   return `${String(h % 12 || 12).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
 })();
 
-function drawTicket(ctx, t) {
+function drawTicket(ctx, t, clock, sT) {
   const { W, H, K } = TK;
   ctx.save();
   ctx.translate(TICKET.x, TICKET.y);
   ctx.scale(K, K);
 
   // pulse ring (stops once the scan begins, like :hover on the site)
-  if (t < TL.scan[0]) {
-    const pp = 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 2);
+  if (sT < TL.scan[0]) {
+    const pp = 0.5 - 0.5 * Math.cos((2 * Math.PI * clock) / 2);
     const sp = 6 * pp;
     rr(ctx, -sp, -sp, W + 2 * sp, H + 2 * sp, 8 + sp);
     ctx.fillStyle = `rgba(26,82,212,${lerp(0.2, 0.12, pp)})`;
@@ -158,7 +163,7 @@ function drawTicket(ctx, t) {
   lbl('PASSENGER', c[0], 60); big('you!', c[0], 77, 12);
   lbl('TODAY', c[1], 60); big(DATE_STR, c[1], 77, 12);
   lbl('NOW', c[2], 60);
-  const dotA = 0.3 + 0.7 * (0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 2));
+  const dotA = 0.3 + 0.7 * (0.5 - 0.5 * Math.cos((2 * Math.PI * clock) / 2));
   ctx.beginPath(); ctx.arc(c[2] + 2.5, 73.5, 2.5, 0, Math.PI * 2);
   ctx.fillStyle = `rgba(26,82,212,${dotA})`; ctx.fill();
   big(TIME_STR, c[2] + 9, 77, 12);
@@ -179,7 +184,7 @@ function drawTicket(ctx, t) {
   for (const cy of [0, H]) { ctx.beginPath(); ctx.arc(W - 42 - 10 + 0, cy, 10, 0, Math.PI * 2); ctx.fill(); }
 
   // scan line + glow
-  const sp = prog(t, TL.scan[0], TL.scan[1]);
+  const sp = prog(sT, TL.scan[0], TL.scan[1]);
   if (sp > 0 && sp < 1) {
     const y = easeInOutCubic(sp) * H;
     const a = sp < 0.08 ? sp / 0.08 : sp > 0.92 ? (1 - sp) / 0.08 : 1;
@@ -218,7 +223,7 @@ function drawStampMark(ctx, t) {
   const blur = p < 0.4 ? lerp(3, 0, p / 0.4) * 2 : 0;
   const img = ctxImg.stampArt;
   ctx.save();
-  ctx.translate(STAMP_PT.x, STAMP_PT.y);
+  ctx.translate(SP.x, SP.y);
   ctx.rotate((-14 * Math.PI) / 180);
   ctx.scale(sc, sc);
   ctx.globalAlpha = al;
@@ -250,8 +255,8 @@ function drawSplatter(ctx, t) {
     ctx.fillStyle = COLORS.stamp;
     ctx.beginPath();
     ctx.arc(
-      STAMP_PT.x + Math.cos(s.ang) * s.dist * e,
-      STAMP_PT.y + Math.sin(s.ang) * s.dist * e,
+      SP.x + Math.cos(s.ang) * s.dist * e,
+      SP.y + Math.sin(s.ang) * s.dist * e,
       (s.size / 2) * e + 1, 0, Math.PI * 2,
     );
     ctx.fill();
@@ -259,10 +264,10 @@ function drawSplatter(ctx, t) {
   ctx.restore();
 }
 
-function drawInstruction(ctx, t) {
+function drawInstruction(ctx, t, clock) {
   const img = ctxImg.click;
   const w = 980, h = w * (img.height / img.width);
-  let a = 0.65 - 0.2 * Math.cos((2 * Math.PI * t) / 2.4);
+  let a = 0.65 - 0.2 * Math.cos((2 * Math.PI * clock) / 2.4);
   let dx = 0, sc = 1;
   const p = prog(t, TL.impact + 0.1, TL.impact + 0.6);
   if (p > 0) {
@@ -276,6 +281,20 @@ function drawInstruction(ctx, t) {
   ctx.translate(FW / 2 + dx, 250);
   ctx.scale(sc, sc);
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
+  ctx.restore();
+}
+
+function drawHand(ctx, t, clock) {
+  const img = ctxImg.hand;
+  const w = 600, h = w * (img.height / img.width);
+  const enter = easeOutCubic(prog(t, 0.2, 1.0));
+  const sway = Math.sin(clock * 1.6) * 5;
+  // fingertip (image ~ (60,100)/900 wide) tucked just inside the ticket's lower-right corner
+  const tipX = TICKET.x + TICKET.w - 70 + (1 - enter) * 260 + sway;
+  const tipY = TICKET.y + TICKET.h - 6 + (1 - enter) * 340;
+  const fx = (60 / 900) * w, fy = (100 / 1236) * h;
+  ctx.save();
+  ctx.drawImage(img, tipX - fx, tipY - fy, w, h);
   ctx.restore();
 }
 
@@ -303,20 +322,21 @@ function drawStampSprite(ctx, t) {
   }
   ctx.save();
   ctx.globalAlpha = al;
-  ctx.translate(STAMP_PT.x + ox, STAMP_PT.y + oy);
+  ctx.translate(SP.x + ox, SP.y + oy);
   ctx.rotate(rot);
   ctx.scale(sc, sc);
   ctx.drawImage(img, -SPR_ANCHOR.x * SPR_W, -SPR_ANCHOR.y * h, SPR_W, h);
   ctx.restore();
 }
 
-function drawTicketPanel(ctx, t) {
+function drawTicketPanel(ctx, t, clock, sT) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, FW, FH);
-  drawInstruction(ctx, t);
-  drawTicket(ctx, t);
+  drawInstruction(ctx, t, clock);
+  drawTicket(ctx, t, clock, sT);
   drawStampMark(ctx, t);
   drawSplatter(ctx, t);
+  drawHand(ctx, t, clock);
   drawStampSprite(ctx, t);
   panelNum(ctx, '01');
 }
@@ -326,14 +346,14 @@ const CAP_PLATFORM = 'always drawing and building...';
 const CAP_TRAIN = "let's go somewhere good.";
 export const CAP_START = { platform: 4.0, train: 8.0 };
 
-function drawPlatformPanel(ctx, t) {
+function drawPlatformPanel(ctx, t, clock) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, FW, FH);
   const z = track([[3.0, 1.04], [5.3, 1.16], [7.4, 1.26]], t);
   const cx = track([[3.0, 2000], [7.4, 2260]], t);
   const cam = { zoom: z, cx, cy: 1500 / z + 30 };
   const e = easeTrain(prog(t, TL.train[0], TL.train[1]));
-  const bob = -28 * (0.5 - 0.5 * Math.cos((2 * Math.PI * t) / 2.6));
+  const bob = -28 * (0.5 - 0.5 * Math.cos((2 * Math.PI * clock) / 2.6));
   withCam(ctx, cam, () => {
     // same stacking as the site: train sits behind the platform art
     layer(ctx, ctxImg.train, {
@@ -348,12 +368,15 @@ function drawPlatformPanel(ctx, t) {
 }
 
 // ── front face: 01 → ink wipe → 02 ─────────────────────────────────────────
-export function drawFront(ctx, t) {
+// t = stamp-timeline time; clock = free-running time for idle motion (defaults to t);
+// scanT = scan-line time (defaults to t; interactive page passes -1 = idle, 99 = done)
+export function drawFront(ctx, t, clock = t, scanT) {
+  const sT = scanT === undefined ? t : scanT;
   const [w0, w1] = TL.wipe;
-  if (t < w0) return drawTicketPanel(ctx, t);
-  if (t >= w1) return drawPlatformPanel(ctx, t);
+  if (t < w0) return drawTicketPanel(ctx, t, clock, sT);
+  if (t >= w1) return drawPlatformPanel(ctx, t, clock);
 
-  drawTicketPanel(ctx, t);
+  drawTicketPanel(ctx, t, clock, sT);
   const p = easeInOutCubic(prog(t, w0, w1));
   const S = FW * 0.38;
   const e0 = lerp(-S * 0.1, FW + S + 60, p); // edge x at the top
@@ -362,7 +385,7 @@ export function drawFront(ctx, t) {
   ctx.moveTo(0, 0); ctx.lineTo(e0, 0); ctx.lineTo(e0 - S, FH); ctx.lineTo(0, FH);
   ctx.closePath();
   ctx.clip();
-  drawPlatformPanel(ctx, t);
+  drawPlatformPanel(ctx, t, clock);
   ctx.restore();
   // ink stroke riding the wipe edge
   ctx.save();
@@ -380,7 +403,7 @@ export function drawFront(ctx, t) {
 const STRIP_SCALE = 1.12; // buildings strip is 4000x676 natively
 const STRIP_Y = 1370;
 
-export function drawBack(ctx, t, sway = 0, swayPitch = 0) {
+export function drawBack(ctx, t, sway = 0, swayPitch = 0, boarded = true, clock = t) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, FW, FH);
   const z = track([[5.8, 1.42], [12, 1.62]], t, (x) => x);
@@ -399,9 +422,10 @@ export function drawBack(ctx, t, sway = 0, swayPitch = 0) {
     // mid layer: the interior frame (windows are transparent in the art)
     layer(ctx, ctxImg.interior, { dx: sway * 120, dy: swayPitch * 60 });
     // near layer: passenger moves a bit more than the frame
-    layer(ctx, ctxImg.sitting, { dx: sway * 300, dy: swayPitch * 140 + Math.sin(t * 1.7) * 6, alpha: pass });
+    layer(ctx, ctxImg.sitting, { dx: sway * 300, dy: swayPitch * 140 + Math.sin(clock * 1.7) * 6, alpha: pass });
   });
-  captionBox(ctx, CAP_TRAIN, typed(t, CAP_START.train, 0.048, CAP_TRAIN));
+  if (boarded) captionBox(ctx, CAP_TRAIN, typed(t, CAP_START.train, 0.048, CAP_TRAIN));
+  else captionBox(ctx, 'stamp your ticket to board.', 99);
   panelNum(ctx, '03');
 }
 
