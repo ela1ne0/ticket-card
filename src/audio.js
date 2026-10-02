@@ -4,7 +4,7 @@
 import { TL } from './config.js';
 
 let noiseBuf = null;
-function noise(ctx) {
+export function noise(ctx) {
   if (noiseBuf && noiseBuf.sampleRate === ctx.sampleRate) return noiseBuf;
   const len = ctx.sampleRate * 2;
   const b = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -19,7 +19,7 @@ function noise(ctx) {
 }
 
 // filtered-noise burst: freq sweeps f0 -> f1, gain envelope a/d/r
-function whoosh(ctx, out, when, dur, { f0 = 400, f1 = 1800, q = 0.9, gain = 0.15, type = 'bandpass', attack = 0.3 } = {}) {
+export function whoosh(ctx, out, when, dur, { f0 = 400, f1 = 1800, q = 0.9, gain = 0.15, type = 'bandpass', attack = 0.3 } = {}) {
   const src = ctx.createBufferSource();
   src.buffer = noise(ctx);
   src.loop = true;
@@ -35,7 +35,7 @@ function whoosh(ctx, out, when, dur, { f0 = 400, f1 = 1800, q = 0.9, gain = 0.15
   src.start(when, 0); src.stop(when + dur + 0.05);
 }
 
-function tone(ctx, out, when, freq, dur, gain = 0.1, type = 'sine') {
+export function tone(ctx, out, when, freq, dur, gain = 0.1, type = 'sine') {
   const o = ctx.createOscillator(); o.type = type; o.frequency.value = freq;
   const g = ctx.createGain();
   g.gain.setValueAtTime(0, when);
@@ -45,7 +45,7 @@ function tone(ctx, out, when, freq, dur, gain = 0.1, type = 'sine') {
 }
 
 // the portfolio's thud: low-passed noise burst + tiny click, plus a sub punch
-function thud(ctx, out, when) {
+export function thud(ctx, out, when) {
   const len = Math.floor(ctx.sampleRate * 0.12);
   const buf = ctx.createBuffer(1, len, ctx.sampleRate);
   const d = buf.getChannelData(0);

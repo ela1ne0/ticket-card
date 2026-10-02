@@ -19,7 +19,7 @@ export async function boot({ width = 1080, height = 1920, query = '?export=1' } 
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   page.on('pageerror', (e) => console.error('[page error]', e.message));
   page.on('console', (m) => { if (m.type() === 'error') console.error('[console]', m.text()); });
-  await page.goto(`http://127.0.0.1:${port}/${query}`);
+  await page.goto(`http://127.0.0.1:${port}/reel.html${query}`);
   await page.waitForFunction('window.__reelReady === true', null, { timeout: 60000 });
 
   const close = async () => { await browser.close(); await server.close(); };

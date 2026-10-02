@@ -1,20 +1,13 @@
 :root { --blue:#1a52d4; --mono:'Space Mono', ui-monospace, monospace; }
 * { box-sizing:border-box; margin:0; padding:0; }
-html, body { height:100%; overflow:hidden; background:#123aa3; overscroll-behavior:none; }
+html, body { height:100%; overflow:hidden; background:var(--blue); overscroll-behavior:none; }
 body { font-family:var(--mono); -webkit-user-select:none; user-select:none; }
 #app {
   position:fixed; inset:0; touch-action:none; cursor:grab;
-  background:radial-gradient(ellipse at 50% 46%, #2b68ee 0%, #1a52d4 55%, #123aa3 100%);
+  background:var(--blue);
 }
 #app.grabbing { cursor:grabbing; }
 #app.stamping { cursor:none; }
-#dots {
-  position:absolute; inset:0; pointer-events:none;
-  background-image:radial-gradient(circle at center, rgba(255,255,255,.14) 2.4px, transparent 3px);
-  background-size:26px 26px;
-  -webkit-mask-image:radial-gradient(ellipse at 50% 46%, transparent 18%, #000 88%);
-          mask-image:radial-gradient(ellipse at 50% 46%, transparent 18%, #000 88%);
-}
 #gl, #fx { position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none; }
 #top-label {
   position:absolute; left:0; right:0; top:max(5vh, env(safe-area-inset-top)); text-align:center;

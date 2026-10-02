@@ -1,5 +1,10 @@
 # ticket-reel
 
+Two pages, one codebase and one set of art:
+
+- **`/` — interactive card.** Drag to spin it any way you like (with momentum), scroll/pinch to zoom, hover the ticket to scan it, click to stamp it → the platform panel wipes in and the train slides up → flip the card (button, **Space**, or just spin it) to ride. Keys: **Space** flip · **R** reset · **N** start over · **H** hide UI. Add `?record=1` to hide all UI for screen-recording a demo.
+- **`/reel.html` — the scripted 9:16 reel** (below), which also exports to MP4.
+
 A 3D card for a reel: **ticket → stamp → platform (train slides in) → card flips → train interior with parallax buildings.**
 Built with Vite + three.js. The art is your own panel layers from `portfolio2026-7` (nothing generated).
 
@@ -10,7 +15,7 @@ glossy three.js card. Every animation is a pure function of time, so playback, s
 
 ```bash
 npm install
-npm run dev          # open the printed URL, click or press Space to play
+npm run dev          # interactive card at the printed URL; the reel is at /reel.html
 ```
 
 URL options (combine freely):
@@ -47,7 +52,10 @@ Needs `ffmpeg` on your PATH. Frames are rendered one at a time at exact timestam
 | `src/faces.js` | the three panels: ticket + stamp + splatter, platform + train, interior + parallax. Panel caption text is `CAP_PLATFORM` / `CAP_TRAIN` |
 | `src/timeline.js` | card motion, camera moves, impact shake |
 | `src/audio.js` | synthesized sound design (same sounds as your site's beep/thud, plus whooshes, chime, rail clacks) |
-| `src/main.js` | scene, lighting, glossy card material, overlays, playback API |
+| `src/scene.js` | shared: renderer, lighting, glossy card, face textures |
+| `src/reel.js` | the scripted reel (reel.html): overlays, playback, export API |
+| `src/interactive.js` | the interactive page (index.html): drag/inertia, raycast hover + stamp, flip, zoom |
+| `src/sfx.js` | interactive sound effects (reuses `audio.js` synths) |
 | `public/assets/` | your layers, downscaled (3000×2250). Swap files in place to restyle |
 
 Timeline (seconds): card in 0–0.85 · scan 0.95 · stamp lands **2.25** · ink wipe 3.2 · train 3.7–5.3 · flip 6.0–7.25 · outro 10.4 · total 12.0
