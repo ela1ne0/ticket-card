@@ -1,6 +1,6 @@
 # stamp the ticket boi 🎫
 
-this is a little card you can spin around, stamp, and ride.
+this is a little card you can spin around, stamp, and ride. I had this idea after stumbling across https://ramp.design/
 
 it started as the first three panels of my portfolio, a manga-style train journey, and i wanted to see if i could pick them up and hold them. so i turned the panels into a 3D card:
 
@@ -10,7 +10,7 @@ it started as the first three panels of my portfolio, a manga-style train journe
 
 all the art is drawn by me (the panels from my portfolio). the card itself is three.js, and everything else is plain JavaScript.
 
-**live:** _add your link here_ · **my portfolio:** _add your link here_
+**live:**  · **my portfolio:** https://www.elaineyu.design/
 
 ## play with it
 
