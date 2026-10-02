@@ -4,6 +4,9 @@
 //   ?record=1   hide all UI + native cursor (for screen-recording a demo)
 //   ?manual=1   no animation loop; drive it with window.__play.tick(dt) (used by the tests)
 
+import { inject } from '@vercel/analytics';
+inject();
+
 import './play.css';
 import '@fontsource/space-mono/400.css';
 import '@fontsource/space-mono/700.css';
