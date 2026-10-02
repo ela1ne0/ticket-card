@@ -1,6 +1,6 @@
-# stamp your ticket 🎫
+# stamp the ticket boi 🎫
 
-hi, i'm elaine. this is a little card you can spin around, stamp, and ride.
+this is a little card you can spin around, stamp, and ride. I had this idea after stumbling across [ramp.design](https://ramp.design/) (why is everyone there so tuff)
 
 it started as the first three panels of my portfolio, a manga-style train journey, and i wanted to see if i could pick them up and hold them. so i turned the panels into a 3D card:
 
@@ -10,7 +10,7 @@ it started as the first three panels of my portfolio, a manga-style train journe
 
 all the art is drawn by me (the panels from my portfolio). the card itself is three.js, and everything else is plain JavaScript.
 
-**live:** _add your link here_ · **my portfolio:** _add your link here_
+**live:** [here](https://ticket-card.vercel.app/) **my portfolio:** [here](https://www.elaineyu.design/)
 
 ## play with it
 
@@ -54,4 +54,4 @@ options: `?record=1` hides all the buttons for screen-recording, `?t=3.2` freeze
 
 the code is free to learn from. the illustrations in `public/assets/` are mine, all rights reserved. please don't reuse them without asking.
 
-made by [elaine yu](https://elaineyu.design) · duke '29
+made by yours truly :) [elaine yu](https://elaineyu.design) 
