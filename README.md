@@ -10,7 +10,7 @@ it started as the first three panels of my portfolio, a manga-style train journe
 
 all the art is drawn by me (the panels from my portfolio). the card itself is three.js, and everything else is plain JavaScript.
 
-**live:** https://ticket-card.vercel.app/ **my portfolio:** https://www.elaineyu.design/
+**live:** [here](https://ticket-card.vercel.app/) **my portfolio:** [here](https://www.elaineyu.design/)
 
 ## play with it
 
@@ -54,4 +54,4 @@ options: `?record=1` hides all the buttons for screen-recording, `?t=3.2` freeze
 
 the code is free to learn from. the illustrations in `public/assets/` are mine, all rights reserved. please don't reuse them without asking.
 
-made by yours truly :)[elaine yu](https://elaineyu.design)
+made by yours truly :) [elaine yu](https://elaineyu.design) 
